@@ -1,0 +1,1 @@
+fill the input folder, then run demo.py (yes, it's as ez as that)
