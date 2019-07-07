@@ -5,6 +5,10 @@ import subprocess
 import os
 import plotly as py
 import plotly.graph_objs as go
+import time
+import shutil
+
+t1 = time.time()
 
 # the next two functions are depreciated, they DO NOT produce good results.
 # using the bounding boxes has been directly shifted to the tessaract functions.
@@ -31,7 +35,7 @@ def crop_rect(img, rect):
 def set_crop(eval_path):
     all_boxes = open(eval_path, 'r').readlines()
     img_path = all_boxes[0]
-    img = cv2.imread("input/picoctf scores.JPG")
+    img = cv2.imread("img_path")
 
     #writer=open(out_path, 'w')
 
@@ -61,98 +65,121 @@ def set_crop(eval_path):
 
 scores_list = []
 max_score = 19000
-
-#subprocess.call("python3 eval.py --test_data_path=input/ --checkpoint_path=pretrained/ --output_dir=output/", shell=True)
 directory = "input/"
+amountoftime = 2.5
+gtitle = "MEOW GRR *real cat moment*"
+#add user input
+max_score = input("What's the max. score of the CTF? (assumed 19000 if blank or 0)\n>>> ")
+if max_score=="0" or max_score=="":
+    max_score = 19000
+else:
+    max_score=int(max_score)
+directory = input("What's the directory of the input folder, realative to the launch location of this script?\n>>> ")
+amountoftime = input("What amount of time (in minutes) should the program poll the input folder?\n>>> ")
+amountoftime=int(amountoftime)
+gtitle = input("Name the resulting graph\n>>> ")
+print("\n READY!")
 
-
-#note: add all of the below to a function for asyncronous calling
-for filename in os.listdir(directory):
-    filename = filename.lower()
-    if filename.endswith(".jpg") or filename.endswith(".png"):
-        #run tessaract operations
-        cleanme = pytesseract.image_to_string(cv2.imread(os.path.join(directory, filename))).split("\n")
-        cleanlist = []
-        ##print("\n\n")
-        #clean up the results a bit
-        for line in cleanme:
-            if line == "" or line == " ":
-                continue
-            else:
-                ##print(line)
-                cleanlist.append(line)
-        #find and eval the score
-        for line in cleanlist:
-            #there's some that work directly, but others (they're evil) who didn't do it on the score page
-            #luckily, there's a redundancy fix here
-            if "Score:" in line or str(filename[:-4].split(" - ")[0]).lower() in line.lower():
-                findint = line.split(" ")
-                foundint = -100
-                for possibleint in findint:
-                    try:
-                        foundint = int(possibleint)
-                    except:
+while True: #oof solved the looping problem!!!!!!!!!!
+    #wait for a cpecified amount of time
+    if int(time.time()-t1) % int(amountoftime*60) == 0:
+        #the line below is no longer needed, all of the algorithms have been incorporated into one.
+        #subprocess.call("python3 eval.py --test_data_path=input/ --checkpoint_path=pretrained/ --output_dir=output/", shell=True)
+        #print("running!")
+        subprocess.call("clear")
+        print("\033[1;32;40m Begin Poll  \n")
+        print("\033[1;37;40m")
+        for filename in os.listdir(directory):
+            filename = filename.lower()
+            if filename.endswith(".jpg") or filename.endswith(".png"):
+                #run tessaract operations
+                cleanme = pytesseract.image_to_string(cv2.imread(os.path.join(directory, filename))).split("\n")
+                cleanlist = []
+                ##print("\n\n")
+                #clean up the results a bit
+                for line in cleanme:
+                    if line == "" or line == " ":
                         continue
-                #add all the culminated scores as tuples to a list
-                    #one character, the thunderbolt, is commonly misinterpreted as a "4" or a "$"
-                    #the easiest fix is to compare it to the max. score, when it's passed through that type of operation.
-                if foundint > 0 and foundint < max_score:
-                    score_tuple = str(filename[:-4].split(" - ")[0]) , str(foundint)
-                    scores_list.append(score_tuple)
-                elif foundint > 0 and foundint > max_score:
-                    score_tuple = str(filename[:-4].split(" - ")[0]) , str(foundint)[1:]
-                    scores_list.append(score_tuple)
-                elif foundint < 0:
-                    print("\n\033[1;31;40m Please contact team " + str(filename[:-4].split(" - ")[0]) + ", their screenshot could not be read.")
-                    print("\033[1;37;40m")
+                    else:
+                        ##print(line)
+                        cleanlist.append(line)
+                #find and eval the score
+                for line in cleanlist:
+                    #there's some that work directly, but others (they're evil) who didn't do it on the score page
+                    #luckily, there's a redundancy fix here
+                    if "Score:" in line or str(filename[:-4].split(" - ")[0]).lower() in line.lower():
+                        findint = line.split(" ")
+                        foundint = -100
+                        for possibleint in findint:
+                            try:
+                                foundint = int(possibleint)
+                            except:
+                                continue
+                        #add all the culminated scores as tuples to a list
+                            #one character, the thunderbolt, is commonly misinterpreted as a "4" or a "$"
+                            #the easiest fix is to compare it to the max. score, when it's passed through that type of operation.
+                        if foundint > 0 and foundint < max_score:
+                            score_tuple = str(filename[:-4].split(" - ")[0]) , str(foundint)
+                            scores_list.append(score_tuple)
+                        elif foundint > 0 and foundint > max_score:
+                            score_tuple = str(filename[:-4].split(" - ")[0]) , str(foundint)[1:]
+                            scores_list.append(score_tuple)
+                        elif foundint < 0:
+                            print("\n\033[1;31;40m Please contact team " + str(filename[:-4].split(" - ")[0]) + ", their screenshot could not be read.")
+                            print("\033[1;37;40m")
 
-#so while our list is now pretty clean, there are still problems (wow, totally unexpected)
-#clean up repeats by selecting the higher score
-seen_names = []
-final_list = []
-#aw yeah look at those neste for statements (i'm great at coding, i swear)
-for index, arg in enumerate(scores_list):
-    icu = False
-    for sni, vis in enumerate(seen_names):
-        icu = False
-        if arg[0] == vis[0]:
-            icu=True
-            if int(scores_list[vis[1]][1]) > int(arg[1]):
-                pass
-            elif int(scores_list[vis[1]][1]) == int(arg[1]):
-                pass
-            else:
-                del final_list[sni]
+        #so while our list is now pretty clean, there are still problems (wow, totally unexpected)
+        #clean up repeats by selecting the higher score
+        seen_names = []
+        final_list = []
+        #aw yeah look at those neste for statements (i'm great at coding, i swear)
+        for index, arg in enumerate(scores_list):
+            icu = False
+            for sni, vis in enumerate(seen_names):
+                icu = False
+                if arg[0] == vis[0]:
+                    icu=True
+                    if int(scores_list[vis[1]][1]) > int(arg[1]):
+                        pass
+                    elif int(scores_list[vis[1]][1]) == int(arg[1]):
+                        pass
+                    else:
+                        del final_list[sni]
+                        final_list.append(arg)
+            if icu==False:
+                temp= arg[0], index
+                seen_names.append(temp)
                 final_list.append(arg)
-    if icu==False:
-        temp= arg[0], index
-        seen_names.append(temp)
-        final_list.append(arg)
 
-##print(scores_list)
-print(final_list)
-x=[]
-y=[]
-for team in final_list:
-    x.append(team[0])
-    y.append(team[1])
+        ##print(scores_list)
+        print(final_list)
+        x=[]
+        y=[]
+        #graph with plotly
+        for team in final_list:
+            x.append(team[0])
+            y.append(team[1])
 
-data = [go.Bar(
-            x=x,
-            y=y,
-            text=y,
-            textposition = 'auto',
-            marker=dict(
-                color='rgb(158,202,225)',
-                line=dict(
-                    color='rgb(8,48,107)',
-                    width=1.5),
-            ),
-            opacity=0.6
-        )]
+        data = [go.Bar(
+                    x=x,
+                    y=y,
+                    text=y,
+                    textposition = 'auto',
+                    marker=dict(
+                        color='rgb(158,202,225)',
+                        line=dict(
+                            color='rgb(8,48,107)',
+                            width=1.5),
+                    ),
+                    opacity=0.6
+                )]
 
-py.offline.plot({
-    "data": data,
-    "layout": go.Layout(title="meow")
-    }, auto_open=True)
-             
+        py.offline.plot({
+            "data": data,
+            "layout": go.Layout(title=gtitle)
+            }, auto_open=False)
+
+        #ok, now clean out the folder
+        for filename in os.listdir(directory):
+            shutil.move(os.path.join(directory, filename), os.path.join(directory[:-1]+"_archive/", filename))
+                        
