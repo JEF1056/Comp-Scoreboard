@@ -11,7 +11,7 @@ FLAGS = tf.app.flags.FLAGS
 
 
 def unpool(inputs):
-    return tf.compat.v1.image.resize_bilinear(inputs, size=[tf.shape(inputs)[1]*2,  tf.shape(inputs)[2]*2])
+    return tf.image.resize_bilinear(inputs, size=[tf.shape(inputs)[1]*2,  tf.shape(inputs)[2]*2])
 
 
 def mean_image_subtraction(images, means=[123.68, 116.78, 103.94]):

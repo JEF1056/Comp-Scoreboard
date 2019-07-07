@@ -178,7 +178,7 @@ def resnet_v1(inputs,
     Raises:
       ValueError: If the target output_stride is not valid.
     """
-    with tf.compat.v1.variable_scope(scope, 'resnet_v1', [inputs], reuse=reuse) as sc:
+    with tf.variable_scope(scope, 'resnet_v1', [inputs], reuse=reuse) as sc:
         end_points_collection = sc.name + '_end_points'
         with slim.arg_scope([slim.conv2d, bottleneck,
                              resnet_utils.stack_blocks_dense],

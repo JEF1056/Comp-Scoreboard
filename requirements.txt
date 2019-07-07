@@ -9,3 +9,4 @@ ipython==6.1.0
 Pillow==4.2.1
 opencv-python
 pytesseract
+plotly

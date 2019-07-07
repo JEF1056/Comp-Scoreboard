@@ -3,6 +3,8 @@ import time
 import math
 import os
 import numpy as np
+import logging
+logging.getLogger('tensorflow').disabled = True
 import tensorflow as tf
 
 import locality_aware_nms as nms_locality
@@ -134,13 +136,13 @@ def main(argv=None):
             raise
 
     with tf.get_default_graph().as_default():
-        input_images = tf.compat.v1.placeholder(tf.float32, shape=[None, None, None, 3], name='input_images')
-        global_step = tf.compat.v1.get_variable('global_step', [], initializer=tf.constant_initializer(0), trainable=False)
+        input_images = tf.placeholder(tf.float32, shape=[None, None, None, 3], name='input_images')
+        global_step = tf.get_variable('global_step', [], initializer=tf.constant_initializer(0), trainable=False)
 
         f_score, f_geometry = model.model(input_images, is_training=False)
 
         variable_averages = tf.train.ExponentialMovingAverage(0.997, global_step)
-        saver = tf.compat.v1.train.Saver(variable_averages.variables_to_restore())
+        saver = tf.train.Saver(variable_averages.variables_to_restore())
 
         with tf.Session(config=tf.ConfigProto(allow_soft_placement=True)) as sess:
             ckpt_state = tf.train.get_checkpoint_state(FLAGS.checkpoint_path)
@@ -179,7 +181,6 @@ def main(argv=None):
                             os.path.basename(im_fn).split('.')[0]))
 
                     with open(res_file, 'w') as f:
-                        f.write(im_fn + "\n")
                         for box in boxes:
                             # to avoid submitting errors
                             box = sort_poly(box.astype(np.int32))
@@ -194,4 +195,4 @@ def main(argv=None):
                     cv2.imwrite(img_path, im[:, :, ::-1])
 
 if __name__ == '__main__':
-    tf.compat.v1.app.run()
+    tf.app.run()
