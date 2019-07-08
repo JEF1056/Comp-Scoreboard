@@ -46,4 +46,4 @@ The window will look somewhat like this:
 ```
 
 # Generated Example
-<iframe> "https://raw.githubusercontent.com/JEF1056/Comp-Scoreboard/master/temp-plot.html" </iframe>
+<iframe src=https://raw.githubusercontent.com/JEF1056/Comp-Scoreboard/master/temp-plot.html style="border:none;"></iframe>
