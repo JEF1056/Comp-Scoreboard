@@ -4,6 +4,7 @@ sudo apt install libgeos-dev
 sudo apt install pkg-config
 sudo apt install tesseract-ocr
 sudo apt install python3-opencv
+sudo apt install python3-tk
 sudo pip3 install -r requirements.txt'
 }
 

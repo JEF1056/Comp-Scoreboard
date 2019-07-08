@@ -1,3 +1,6 @@
+import matplotlib
+matplotlib.use('GTK')
+
 import cv2
 import numpy as np
 import pytesseract
@@ -7,11 +10,12 @@ import plotly as py
 import plotly.graph_objs as go
 import time
 import shutil
+import tkinter as tk
 
 t1 = time.time()
 
 # the next two functions are depreciated, they DO NOT produce good results.
-# using the bounding boxes has been directly shifted to the tessaract functions.
+# using the bounding boxes has been directly shifted to the tessaract functions. 
 
 def crop_rect(img, rect):
     # get the parameter of the small rectangle
@@ -62,6 +66,12 @@ def set_crop(eval_path):
             img_crop, img_rot = crop_rect(img, rect)
             print(pytesseract.image_to_string(img_crop))
 
+def runcommand():
+    command_inp = e1.get()
+    print(command_inp)
+    command_inp = command_inp.lower()
+    if command_inp == "-r":
+        task()
 
 scores_list = []
 max_score = 19000
@@ -75,22 +85,30 @@ if max_score=="0" or max_score=="":
 else:
     max_score=int(max_score)
 directory = input("What's the directory of the input folder, realative to the launch location of this script?\n>>> ")
-amountoftime = input("What amount of time (in minutes) should the program poll the input folder?\n>>> ")
+amountoftime = input("What amount of time (in seconds) should the program poll the input folder?\n>>> ")
 amountoftime=int(amountoftime)
 gtitle = input("Name the resulting graph\n>>> ")
 print("\n READY!")
 
+window = tk.Tk()
+meow=True
+
+global draw_line
 draw_line = "█"
 subprocess.call("clear")
 print("\033[1;32;40m" + draw_line)
 f = '{0:>12}:  {1}\033[1;37;40m'
 print("\033[2;37;40m")
 print(f.format("Team", "Points"))
-print("")
+print("\033[1;30;40m")
+print(f.format("Null", "Null"))
 
-while True: #oof solved the looping problem!!!!!!!!!!
+#while True: 
+def task(): #oof solved the looping problem!!!!!!!!!!
+    global draw_line
     #wait for a cpecified amount of time
-    if int(time.time()-t1) % int(amountoftime*60) == 0:
+    #if int(time.time()-t1) % int(amountoftime*60) == 0:
+    if meow == True:
         #the line below is no longer needed, all of the algorithms have been incorporated into one.
         #subprocess.call("python3 eval.py --test_data_path=input/ --checkpoint_path=pretrained/ --output_dir=output/", shell=True)
         #print("running!")
@@ -199,4 +217,16 @@ while True: #oof solved the looping problem!!!!!!!!!!
         #ok, now clean out the folder
         for filename in os.listdir(directory):
             shutil.move(os.path.join(directory, filename), os.path.join(directory[:-1]+"_archive/", filename))
-                        
+        
+        #rinse and repeat
+        window.after(int(amountoftime*1000), task)
+
+
+#set up the text box cmdl thing
+tk.Label(window, text="cmd: ").grid(row=0)
+e1 = tk.Entry(window)
+e1.grid(row=0, column=1)
+button = tk.Button(window, text='run', width=5, command=runcommand) 
+button.grid(row=0, column=2)
+window.after(int(amountoftime*1000), task)
+window.mainloop()
