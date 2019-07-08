@@ -80,6 +80,14 @@ amountoftime=int(amountoftime)
 gtitle = input("Name the resulting graph\n>>> ")
 print("\n READY!")
 
+draw_line = "█"
+subprocess.call("clear")
+print("\033[1;32;40m" + draw_line)
+f = '{0:>12}:  {1}\033[1;37;40m'
+print("\033[2;37;40m")
+print(f.format("Team", "Points"))
+print("")
+
 while True: #oof solved the looping problem!!!!!!!!!!
     #wait for a cpecified amount of time
     if int(time.time()-t1) % int(amountoftime*60) == 0:
@@ -88,7 +96,11 @@ while True: #oof solved the looping problem!!!!!!!!!!
         #print("running!")
         subprocess.call("clear")
         print("\033[1;32;40m Begin Poll  \n")
-        print("\033[1;37;40m")
+        print("\033[1;32;40m" + draw_line)
+        draw_line = draw_line+"█"
+        if len(draw_line) == 168:
+            draw_line=="█"
+        print("\033[1;37;40mCheck cycles: " + str(len(draw_line)) +"\n")
         for filename in os.listdir(directory):
             filename = filename.lower()
             if filename.endswith(".jpg") or filename.endswith(".png"):
@@ -152,7 +164,13 @@ while True: #oof solved the looping problem!!!!!!!!!!
                 final_list.append(arg)
 
         ##print(scores_list)
-        print(final_list)
+        f = '{0:>12}:  {1}\033[1;37;40m'
+        print("\033[2;37;40m")
+        print(f.format("Team", "Points"))
+        print("")
+        for team in final_list:
+            print("\033[1;30;40m")
+            print(f.format(team[0], team[1]))
         x=[]
         y=[]
         #graph with plotly
