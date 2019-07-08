@@ -36,6 +36,7 @@ user's name as well, so it'll be saved as `"Code Red - [Insert Team Member's Nam
 Besides setup, there will be a window to run live commands, to ensure smooth operation and allow localized human interference.
 
 The window will look somewhat like this:
+<br>
 ![](https://raw.githubusercontent.com/JEF1056/Comp-Scoreboard/master/tutorial_images/txtbox.PNG)
 
 ## Commands
@@ -45,4 +46,4 @@ The window will look somewhat like this:
 ```
 
 # Generated Example
-<iframe src="https://raw.githubusercontent.com/JEF1056/Comp-Scoreboard/master/temp-plot.html"></iframe>
+<iframe> "https://raw.githubusercontent.com/JEF1056/Comp-Scoreboard/master/temp-plot.html" </iframe>
