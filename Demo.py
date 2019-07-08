@@ -95,7 +95,6 @@ while True: #oof solved the looping problem!!!!!!!!!!
         #subprocess.call("python3 eval.py --test_data_path=input/ --checkpoint_path=pretrained/ --output_dir=output/", shell=True)
         #print("running!")
         subprocess.call("clear")
-        print("\033[1;32;40m Begin Poll  \n")
         print("\033[1;32;40m" + draw_line)
         draw_line = draw_line+"█"
         if len(draw_line) == 168:
