@@ -30,13 +30,13 @@ Users have a suite of rules that need to be followed for optimal results.
 The teams should upload images with just their team name as the name. For example, a team with the name `"Code Red"` would submit a file with with the name `"Code Red.jpg"`
 
 Google forms, which this program was designed to be used with, saves the files in Drive with the (Google)
-user's name as well, so it'll be saved as `"Code Red - [Insert Team Member's Name].jpg"`. The program uses this as an improtant feature, so please make sure teams are informed of this naming scheme. 
+user's name as well, so it'll be saved as `"Code Red - [Insert Team Member's Name].jpg"`. The program uses this as an important feature, so please make sure teams are informed of this naming scheme. 
 
 # Administration
 Besides setup, there will be a window to run live commands, to ensure smooth operation and allow localized human interference.
 
 The window will look somewhat like this:
-![](image.png)
+![](https://raw.githubusercontent.com/JEF1056/Comp-Scoreboard/master/tutorial_images/txtbox.PNG)
 
 ## Commands
 **THIS SECTION IS NOT FINISHED**
@@ -44,3 +44,5 @@ The window will look somewhat like this:
 -r : run the poll immedietly, and update the scores
 ```
 
+# Generated Example
+<iframe src="https://raw.githubusercontent.com/JEF1056/Comp-Scoreboard/master/temp-plot.html"></iframe>
