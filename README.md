@@ -43,6 +43,11 @@ The window will look somewhat like this:
 **THIS SECTION IS NOT FINISHED**
 ```
 -r : run the poll immedietly, and update the scores
+-s (arg) (val) : set a variety of variables
+      s [score]     : max. score
+      t [time]      : poll time
+      d [directory] : poll directory
+      n [name]      : graph name
 ```
 
 # Generated Example
