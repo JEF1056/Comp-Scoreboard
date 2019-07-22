@@ -15,70 +15,42 @@ import tkinter as tk
 t1 = time.time()
 
 # the next two functions are depreciated, they DO NOT produce good results.
-# using the bounding boxes has been directly shifted to the tessaract functions. 
+# using the bounding boxes has been directly shifted to the tessaract functions.
 
-def crop_rect(img, rect):
-    # get the parameter of the small rectangle
-    center, size, angle = rect[0], rect[1], rect[2]
-    center, size = tuple(map(int, center)), tuple(map(int, size))
-
-    # get row and col num in img
-    height, width = img.shape[0], img.shape[1]
-
-    # calculate the rotation matrix
-    M = cv2.getRotationMatrix2D(center, angle, 1)
-    # rotate the original image
-    img_rot = cv2.warpAffine(img, M, (width, height))
-
-    # now rotated rectangle becomes vertical and we crop it
-    img_crop = cv2.getRectSubPix(img_rot, size, center)
-
-    return img_crop, img_rot
-
-
-def set_crop(eval_path):
-    all_boxes = open(eval_path, 'r').readlines()
-    img_path = all_boxes[0]
-    img = cv2.imread("img_path")
-
-    #writer=open(out_path, 'w')
-
-    # loop through all written boxes
-    for index, line in enumerate(all_boxes):
-        if index > 0:
-            line = line.split(",")
-            cnt = np.array([
-                [int(line[0]), int(line[1])],
-                [int(line[2]), int(line[3])],
-                [int(line[4]), int(line[5])],
-                [int(line[6]), int(line[7])]
-            ])
-            rect = cv2.minAreaRect(cnt)
-            #print("rect: {}".format(rect))
-
-            box = cv2.boxPoints(rect)
-            box = np.int0(box)
-
-            # print("bounding box: {}".format(box))
-            cv2.drawContours(img, [box], 0, (0, 0, 255), 2)
-
-            # img_crop will the cropped rectangle, img_rot is the rotated image
-            img_crop, img_rot = crop_rect(img, rect)
-            print(pytesseract.image_to_string(img_crop))
-
-def runcommand():
-    command_inp = e1.get()
-    print(command_inp)
-    command_inp = command_inp.lower()
-    if command_inp == "-r":
-        task()
+#these are important variables, can be changed using commands
+global max_score, direcory, amountoftime, gtitle
 
 scores_list = []
 max_score = 19000
 directory = "input/"
 amountoftime = 2.5
 gtitle = "MEOW GRR *real cat moment*"
-#add user input
+
+def runcommand():
+    global max_score, direcory, amountoftime, gtitle
+    command_inp = e1.get()
+    print("")
+    command_inp = command_inp.lower()
+    if command_inp == "-r":
+        #run check operations agaon
+        task()
+    elif command_inp.startswith("-s"):
+        #set commands
+        args = command_inp.split(" ")
+        if args[1] == "s" or args[1] == "score":
+            max_score = int(args[2])
+            print("Set the max. score to " + str(max_score))
+        elif args[1] == "t" or args[1] == "time":
+            amountoftime = int(args[2])
+            print("Set the polling time to " + str(amountoftime))
+        elif args[1] == "d" or args[1] == "directory":
+            directory = args[2]
+            print("Set input directory to " + directory)
+        elif args[1] == "n" or args[1] == "name":
+            gtitle = args[2]
+            print("Set graph title to " + gtitle)
+
+#add user input for the introduction
 max_score = input("What's the max. score of the CTF? (assumed 19000 if blank or 0)\n>>> ")
 if max_score=="0" or max_score=="":
     max_score = 19000
@@ -103,15 +75,9 @@ print(f.format("Team", "Points"))
 print("\033[1;30;40m")
 print(f.format("Null", "Null"))
 
-#while True: 
 def task(): #oof solved the looping problem!!!!!!!!!!
-    global draw_line
-    #wait for a cpecified amount of time
-    #if int(time.time()-t1) % int(amountoftime*60) == 0:
+    global max_score, direcory, amountoftime, gtitle, draw_line
     if meow == True:
-        #the line below is no longer needed, all of the algorithms have been incorporated into one.
-        #subprocess.call("python3 eval.py --test_data_path=input/ --checkpoint_path=pretrained/ --output_dir=output/", shell=True)
-        #print("running!")
         subprocess.call("clear")
         print("\033[1;32;40m" + draw_line)
         draw_line = draw_line+"█"
@@ -124,13 +90,11 @@ def task(): #oof solved the looping problem!!!!!!!!!!
                 #run tessaract operations
                 cleanme = pytesseract.image_to_string(cv2.imread(os.path.join(directory, filename))).split("\n")
                 cleanlist = []
-                ##print("\n\n")
                 #clean up the results a bit
                 for line in cleanme:
                     if line == "" or line == " ":
                         continue
                     else:
-                        ##print(line)
                         cleanlist.append(line)
                 #find and eval the score
                 for line in cleanlist:
@@ -161,7 +125,7 @@ def task(): #oof solved the looping problem!!!!!!!!!!
         #clean up repeats by selecting the higher score
         seen_names = []
         final_list = []
-        #aw yeah look at those neste for statements (i'm great at coding, i swear)
+        #aw yeah look at those nested for statements (i'm great at coding, i swear)
         for index, arg in enumerate(scores_list):
             icu = False
             for sni, vis in enumerate(seen_names):
@@ -180,7 +144,6 @@ def task(): #oof solved the looping problem!!!!!!!!!!
                 seen_names.append(temp)
                 final_list.append(arg)
 
-        ##print(scores_list)
         f = '{0:>12}:  {1}\033[1;37;40m'
         print("\033[2;37;40m")
         print(f.format("Team", "Points"))
