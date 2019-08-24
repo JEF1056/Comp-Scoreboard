@@ -5,7 +5,7 @@ sudo apt install pkg-config
 sudo apt install tesseract-ocr
 sudo apt install python3-opencv
 sudo apt install python3-tk
-sudo pip3 install -r requirements.txt'
+sudo pip3 install -r requirements.txt
 }
 
 python3 eval.py --test_data_path=input/ --checkpoint_path=pretrained/ --output_dir=output/                         

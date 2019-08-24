@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import matplotlib
 matplotlib.use('GTK')
 
@@ -10,7 +12,8 @@ import plotly as py
 import plotly.graph_objs as go
 import time
 import shutil
-import tkinter as tk
+import threading
+#import tkinter as tk
 
 t1 = time.time()
 
@@ -18,7 +21,7 @@ t1 = time.time()
 # using the bounding boxes has been directly shifted to the tessaract functions.
 
 #these are important variables, can be changed using commands
-global max_score, direcory, amountoftime, gtitle
+global max_score, directory, amountoftime, gtitle
 
 scores_list = []
 max_score = 19000
@@ -27,7 +30,7 @@ amountoftime = 2.5
 gtitle = "MEOW GRR *real cat moment*"
 
 def runcommand():
-    global max_score, direcory, amountoftime, gtitle
+    global max_score, directory, amountoftime, gtitle
     command_inp = e1.get()
     print("")
     command_inp = command_inp.lower()
@@ -62,10 +65,9 @@ amountoftime=int(amountoftime)
 gtitle = input("Name the resulting graph\n>>> ")
 print("\n READY!")
 
-window = tk.Tk()
+#window = tk.Tk()
 meow=True
 
-global draw_line
 draw_line = "█"
 subprocess.call("clear")
 print("\033[1;32;40m" + draw_line)
@@ -75,8 +77,8 @@ print(f.format("Team", "Points"))
 print("\033[1;30;40m")
 print(f.format("Null", "Null"))
 
-def task(): #oof solved the looping problem!!!!!!!!!!
-    global max_score, direcory, amountoftime, gtitle, draw_line
+#def task(): #oof solved the looping problem!!!!!!!!!!
+while True:
     if meow == True:
         subprocess.call("clear")
         print("\033[1;32;40m" + draw_line)
@@ -182,14 +184,5 @@ def task(): #oof solved the looping problem!!!!!!!!!!
             shutil.move(os.path.join(directory, filename), os.path.join(directory[:-1]+"_archive/", filename))
         
         #rinse and repeat
-        window.after(int(amountoftime*1000), task)
-
-
-#set up the text box cmdl thing
-tk.Label(window, text="cmd: ").grid(row=0)
-e1 = tk.Entry(window)
-e1.grid(row=0, column=1)
-button = tk.Button(window, text='run', width=5, command=runcommand) 
-button.grid(row=0, column=2)
-window.after(int(amountoftime*1000), task)
-window.mainloop()
+        time.sleep(amountoftime)
+        #window.after(int(amountoftime*1000), task)
