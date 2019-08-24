@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import matplotlib
-matplotlib.use('GTK')
+matplotlib.use('GTK3Agg')
 
 import cv2
 import numpy as np
