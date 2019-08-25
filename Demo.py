@@ -28,6 +28,7 @@ max_score = 19000
 directory = "input/"
 amountoftime = 2.5
 gtitle = "MEOW GRR *real cat moment*"
+out_path = ""
 
 def runcommand():
     global max_score, directory, amountoftime, gtitle
@@ -63,6 +64,7 @@ directory = input("What's the directory of the input folder, realative to the la
 amountoftime = input("What amount of time (in seconds) should the program poll the input folder?\n>>> ")
 amountoftime=int(amountoftime)
 gtitle = input("Name the resulting graph\n>>> ")
+out_path = input("Output path\n>>> ")
 print("\n READY!")
 
 #window = tk.Tk()
@@ -178,6 +180,8 @@ while True:
             "data": data,
             "layout": go.Layout(title=gtitle)
             }, auto_open=False)
+
+        shutil.copy("temp_plot.html", os.join(out_path, "temp_plot.html"))
 
         #ok, now clean out the folder
         for filename in os.listdir(directory):
