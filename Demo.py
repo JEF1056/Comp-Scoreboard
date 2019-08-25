@@ -87,10 +87,10 @@ while True:
             draw_line=="█"
         print("\033[1;37;40mCheck cycles: " + str(len(draw_line)) +"\n")
         for filename in os.listdir(directory):
-            filename = filename.lower()
             if filename.endswith(".jpg") or filename.endswith(".png"):
                 #run tessaract operations
                 fulldir=os.path.join(directory, filename)
+                filename = filename.lower()
                 tess_img=pytesseract.image_to_string(Image.open(fulldir))
                 cleanme = tess_img.split("\n")
                 cleanlist = []
