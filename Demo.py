@@ -69,7 +69,7 @@ print("\n READY!")
 
 #window = tk.Tk()
 meow=True
-
+global draw_line
 draw_line = "█"
 subprocess.call("clear")
 print("\033[1;32;40m" + draw_line)
@@ -80,7 +80,8 @@ print("\033[1;30;40m")
 print(f.format("Null", "Null"))
 
 #def task(): #oof solved the looping problem!!!!!!!!!!
-while True:
+def update_graph(firstrun):
+    global draw_line
     if meow == True:
         subprocess.call("clear")
         print("\033[1;32;40m" + draw_line)
@@ -88,10 +89,15 @@ while True:
         if len(draw_line) == 168:
             draw_line=="█"
         print("\033[1;37;40mCheck cycles: " + str(len(draw_line)) +"\n")
-        for filename in os.listdir(directory):
+        temp_dir=directory
+        if firstrun == True:
+            temp_dir=directory[:-1]+"_archive/"
+        else:
+            temp_dir=directory
+        for filename in os.listdir(temp_dir):
             if filename.endswith(".jpg") or filename.endswith(".png"):
                 #run tessaract operations
-                cleanme = pytesseract.image_to_string(Image.open(os.path.join(directory, filename))).split("\n")
+                cleanme = pytesseract.image_to_string(Image.open(os.path.join(temp_dir, filename))).split("\n")
                 filename = filename.lower()
                 cleanlist = []
                 #clean up the results a bit
@@ -181,12 +187,19 @@ while True:
             "layout": go.Layout(title=gtitle)
             }, auto_open=False)
 
-        shutil.copy("temp_plot.html", os.join(out_path, "temp_plot.html"))
+        try:
+            shutil.copy("temp-plot.html", os.path.join(out_path, "temp-plot.html"))
+        except:
+            pass
 
         #ok, now clean out the folder
         for filename in os.listdir(directory):
             shutil.move(os.path.join(directory, filename), os.path.join(directory[:-1]+"_archive/", filename))
-        
-        #rinse and repeat
-        time.sleep(amountoftime)
+
         #window.after(int(amountoftime*1000), task)
+
+update_graph(True)
+
+while True:
+    update_graph(False)
+    time.sleep(amountoftime)
