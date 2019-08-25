@@ -90,7 +90,9 @@ while True:
             filename = filename.lower()
             if filename.endswith(".jpg") or filename.endswith(".png"):
                 #run tessaract operations
-                cleanme = pytesseract.image_to_string(Image.open(os.path.join(directory, filename))).split("\n")
+                fulldir=os.path.join(directory, filename)
+                tess_img=pytesseract.image_to_string(Image.open(fulldir))
+                cleanme = tess_img.split("\n")
                 cleanlist = []
                 #clean up the results a bit
                 for line in cleanme:
