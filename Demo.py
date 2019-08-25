@@ -3,7 +3,7 @@
 import matplotlib
 matplotlib.use('GTK3Agg')
 
-import cv2
+from PIL import Image
 import numpy as np
 import pytesseract
 import subprocess
@@ -90,7 +90,7 @@ while True:
             filename = filename.lower()
             if filename.endswith(".jpg") or filename.endswith(".png"):
                 #run tessaract operations
-                cleanme = pytesseract.image_to_string(cv2.imread(os.path.join(directory, filename))).split("\n")
+                cleanme = pytesseract.image_to_string(Image.open(os.path.join(directory, filename))).split("\n")
                 cleanlist = []
                 #clean up the results a bit
                 for line in cleanme:
