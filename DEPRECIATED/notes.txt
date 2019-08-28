@@ -3,6 +3,7 @@ Need to convert to bash script (like a docker)
 sudo apt install libgeos-dev
 sudo apt install pkg-config
 sudo apt install tesseract-ocr
+sudo apt install python3-opencv
 sudo apt install python3-tk
 sudo pip3 install -r requirements.txt
 }
@@ -11,4 +12,8 @@ python3 eval.py --test_data_path=input/ --checkpoint_path=pretrained/ --output_d
 
 if pip doesn't work
 
-drive/BACCC CTF Submissions (File responses)/Screenshot (File responses)
+drive/BACCC CTF Submissions (File responses)/Screenshot (File responses)/
+
+/home/jess/drive/temp-plot.html
+
+media release

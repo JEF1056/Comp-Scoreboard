@@ -81,7 +81,7 @@ print(f.format("Null", "Null"))
 
 #def task(): #oof solved the looping problem!!!!!!!!!!
 def update_graph(firstrun):
-    global draw_line
+    global max_score, amountoftime, gtitle, draw_line
     if meow == True:
         subprocess.call("clear")
         print("\033[1;32;40m" + draw_line)
@@ -188,7 +188,7 @@ def update_graph(firstrun):
             }, auto_open=False)
 
         try:
-            shutil.copy("temp-plot.html", os.path.join(out_path, "temp-plot.html"))
+            shutil.copy("temp-plot.html", os.path.join(out_path, "index.html"))
         except:
             pass
 
