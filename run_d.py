@@ -7,6 +7,16 @@ import plotly as py
 import plotly.graph_objs as go
 import shutil
 import time
+import discord
+import asyncio
+
+#default variables
+script_dir = "script/"
+submit_dir = "drive/BACCC CTF Submissions (File responses)/Screenshot (File responses)"
+team_dir = "teams/"
+site_dir = "site/"
+
+graph_title = "CTF Scores"
 
 def load_all_modules_from_dir(dirname):
     module_list = []
@@ -27,17 +37,14 @@ def cl_text(text, title):
                 cleanlist.append(line)
     return cleanlist
 
-
-directory = "input_archive/"
-print(os.listdir(directory))
-
 def runcheck():
     files = False
-    for filename in os.listdir(directory):
+    print(os.listdir(submit_dir))
+    for filename in os.listdir(submit_dir):
         if filename.endswith(".jpg") or filename.endswith(".png"):
             files = True
             #gather texts
-            img = cv2.imread(os.path.join(directory, filename),cv2.IMREAD_GRAYSCALE)
+            img = cv2.imread(os.path.join(submit_dir, filename),cv2.IMREAD_GRAYSCALE)
             height,width = img.shape
             img = cv2.medianBlur(cv2.resize(img,(width*2,height*2)),3)
             ex_text = pytesseract.image_to_string(img).split("\n")
@@ -46,7 +53,7 @@ def runcheck():
             print(ex_text)
 
             #run modular areas
-            modules = load_all_modules_from_dir("script")
+            modules = load_all_modules_from_dir(script_dir)
             RESULT = ["NULL"]
             for module in modules:
                 res = module.check(ex_text[0])
@@ -67,7 +74,7 @@ def runcheck():
                         temp.append(comp + ", " + RESULT[1])
                 f.close()
                 #write scores
-                f = open("teams/"+team+".txt", "w")
+                f = open(os.path.join(team_dir,team+".txt"), "w")
                 for i,line in enumerate(temp):
                     if i == 0:
                         f.write(line)
@@ -77,7 +84,7 @@ def runcheck():
             except:
                 #new team? new file
                 try:
-                    f = open("teams/"+team+".txt", "w")
+                    f = open(os.path.join(team_dir,team+".txt"), "w")
                     f.write(RESULT[0] + ", " + str(RESULT[1]))
                     f.close()
                 except:
@@ -86,8 +93,8 @@ def runcheck():
         
 def graph():
     final_list = []
-    for filename in os.listdir("teams"):
-        f = open(os.path.join("teams", filename), "r")
+    for filename in os.listdir(team_dir):
+        f = open(os.path.join(team_dir, filename), "r")
         try:
             temp = f.readlines()
         except:
@@ -96,7 +103,7 @@ def graph():
         for x in temp:
             end_score = end_score+int(x.split(", ")[1])
         f.close()
-        team_scores.append([filename[:-4], end_score])
+        final_list.append([filename[:-4], end_score])
     x=[]
     y=[]
     for team in final_list:
@@ -119,19 +126,35 @@ def graph():
 
     py.offline.plot({
         "data": data,
-        "layout": go.Layout(title="CTF Scores")
+        "layout": go.Layout(title=graph_title)
         }, auto_open=False)
 
     try:
-        shutil.copy("temp-plot.html", os.path.join("site/index.html"))
+        shutil.copy("temp-plot.html", os.path.join(site_dir,"index.html"))
     except:
         pass
 
-while True:
+client = discord.Client()
+
+async def loop_bg():
     need_graph = runcheck()
     if need_graph:
         graph()
         print("UPDATED")
-        for filename in os.listdir("drive/BACCC CTF Submissions (File responses)/Screenshot (File responses)"):
-            shutil.move(os.path.join("drive/BACCC CTF Submissions (File responses)/Screenshot (File responses)", filename), os.path.join("drive/BACCC CTF Submissions (File responses)/Screenshot (File responses_archive/", filename))
-    time.sleep(30)
+        for filename in os.listdir(submit_dir):
+            shutil.move(os.path.join(submit_dir, filename), os.path.join(submit_dir[:-1]+"_archive/", filename))
+    await asyncio.sleep(30)
+
+client.loop.create_task(loop_bg())
+
+@client.event
+async def on_ready():
+    print('Logged in as')
+    print(client.user.name)
+    print(client.user.id)
+    print('------')
+
+token = ""
+with open("token.txt", "r") as fp:
+    token=fp.readline().replace("\n", "")
+client.run(token)
