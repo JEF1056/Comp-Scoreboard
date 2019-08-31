@@ -1,3 +1,4 @@
+#all code written by Jess Fan - DO NOT DISTRIBUTE WITHOUT PERMISSION
 import cv2
 import os
 import pytesseract
@@ -9,6 +10,7 @@ import shutil
 import time
 import discord
 import asyncio
+import subprocess
 
 #default variables
 script_dir = "script/"
@@ -63,7 +65,10 @@ def runcheck():
             #now, check if this is a score that needs to be updated or added
             try:
                 f = open("teams/"+team+".txt", "r")
-                temp = f.readlines().split("\n")
+                try:
+                    temp = f.readlines()
+                except:
+                    temp = f.readlines().split("\n")
                 for i,x in enumerate(temp):
                     comp, score = x.split(", ")
                     #update a score
@@ -110,23 +115,14 @@ def graph():
         x.append(team[0])
         y.append(team[1])
 
-    data = [go.Bar(
-                x=x,
-                y=y,
-                text=y,
-                textposition = 'auto',
-                marker=dict(
-                    color='rgb(158,202,225)',
-                    line=dict(
-                        color='rgb(8,48,107)',
-                        width=1.5),
-                ),
-                opacity=0.6
-            )]
+    data = [
+        go.Bar(x=x, y=y, text=y, textposition = 'auto', marker=dict(color='rgb(158,202,225)', 
+            line=dict(color='rgb(8,48,107)', width=1.5)), opacity=0.6)
+            ]
 
     py.offline.plot({
         "data": data,
-        "layout": go.Layout(title=graph_title)
+        "layout": go.Layout(title=graph_title, barmode='stack')
         }, auto_open=False)
 
     try:
@@ -153,6 +149,90 @@ async def on_ready():
     print(client.user.name)
     print(client.user.id)
     print('------')
+
+@client.event
+async def on_message(message):
+    ModMessage = message.content[3:].lower()
+    if message.content.lower().startswith("bs "):
+        try:
+            role = discord.utils.get(message.guild.roles, name="admins")
+        except:
+            await message.channel.send('No "admins" role. Please add one.')
+        if ModMessage == "update" and role in message.author.roles:
+            graph()
+            await message.add_reaction("👌")
+        elif ModMessage.startswith("change ") and role in message.author.roles:
+            ModMessage = ModMessage.replace("change ", "")
+            ModMessage = ModMessage.split(" ")
+            if not len(ModMessage) == 3:
+                await message.channel.send('The "change" argument only accepts 3 arguments formatted as "[Team] [CTF] [Score]"')
+            else:
+                try:
+                    f = open(os.path.join(team_dir,ModMessage[0]+".txt"), "r")
+                    temp = ""
+                    try:
+                        temp = f.readlines()
+                        append = True
+                        if ModMessage[1] in temp:
+                            append = False
+                        else:
+                            append = True
+                        f.close()
+                        if append==True:
+                            with open(os.path.join(team_dir,ModMessage[0]+".txt"), "w") as b:
+                                b.write(temp)
+                                b.write("\n"+ModMessage[1] + ", " + str(ModMessage[2]))
+                        else:
+                            with open(os.path.join(team_dir,ModMessage[0]+".txt"), "w") as b:
+                                b.write(ModMessage[1] + ", " + str(ModMessage[2]))
+                        await message.add_reaction("👌")
+                    except Exception as e:
+                        print(e)
+                        temp = f.readlines().split("\n")
+                        append = True
+                        for i,l in enumerate(temp):
+                            if ModMessage[1] in l:
+                                temp[i] = ModMessage[1] + ", " + str(ModMessage[2])
+                                append = False
+                        if append:
+                            temp.append(ModMessage[1] + ", " + str(ModMessage[2]))
+                        f = open(os.path.join(team_dir,ModMessage[0]+".txt"), "w")
+                        for i,line in enumerate(temp):
+                            if i == 0:
+                                f.write(line)
+                            else:
+                                f.write("\n"+line)
+                        f.close()
+                        await message.add_reaction("👌")
+                except Exception as x:
+                    print(x)
+                    try:
+                        f = open(os.path.join(team_dir,ModMessage[0]+".txt"), "w")
+                        f.write(ModMessage[1] + ", " + str(ModMessage[2]))
+                        f.close()
+                        await message.add_reaction("👌")
+                    except:
+                        pass
+        elif ModMessage.startswith("view "):
+            ModMessage = ModMessage.replace("view ", "")
+            try:
+                f = open(os.path.join(team_dir, ModMessage+".txt"), "r")
+                team_scores = f.readlines()
+                await message.channel.send("```"+str(team_scores)+"```")
+                f.close()
+            except Exception as e:
+                print(e)
+                await message.channel.send("Cannot find a team by the name of " + ModMessage + " (check capitalization)\nTeams: "+ str(os.listdir(team_dir)).replace(".txt", ""))
+        elif ModMessage.startswith("reset ") and role in message.author.roles:
+            ModMessage = ModMessage.replace("reset ", "")
+            if ModMessage == "all":
+                for filename in os.listdir(submit_dir):
+                    os.remove(os.path.join(submit_dir,filename))
+                graph()
+        elif not role in message.author.roles:
+            await message.channel.send("Cannot excecute that command - you are not an admin.")
+        else:
+            await message.channel.send('Could not find command ' + ModMessage)
 
 token = ""
 with open("token.txt", "r") as fp:
