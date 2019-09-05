@@ -1,3 +1,5 @@
+## THIS SECTION IS 100% outdated. DO NOT use this as a use example. This will be updated soonish (tm)
+
 # Installation/Setup
 The current code and setup was tested on Ubuntu 19.01 only, and has been tested on both native Ubuntu and Ubuntu Linux Subsystem for Windows (WSL).
 
