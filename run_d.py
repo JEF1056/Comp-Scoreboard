@@ -6,11 +6,14 @@ import pkgutil
 import sys
 import plotly as py
 import plotly.graph_objs as go
+from plotly.subplots import make_subplots
 import shutil
 import time
 import discord
 import asyncio
 import subprocess
+import binascii
+import re
 
 #default variables
 script_dir = "script/"
@@ -30,13 +33,20 @@ def load_all_modules_from_dir(dirname):
 def hasNumbers(inputString):
     return any(char.isdigit() for char in inputString)
 
+def convertHex(input1):
+    color = binascii.hexlify(str.encode(input1))
+    color = str(color)
+    rep = re.search("'(.*)'", color)
+    endres = "#" + str(rep.group(1)[:6])
+    return endres
+
 def cl_text(text, title):
     cleanlist = []
     #clean up the results a bit
     for line in text:
         if hasNumbers(line):
-            if title.lower() in line.lower() or "score" in line.lower():
-                cleanlist.append(line)
+            #if title.lower() in line.lower() or "score" in line.lower():
+            cleanlist.append(line)
     return cleanlist
 
 def runcheck():
@@ -58,8 +68,8 @@ def runcheck():
             modules = load_all_modules_from_dir(script_dir)
             RESULT = ["NULL"]
             for module in modules:
-                res = module.check(ex_text[0])
-                if not res == ["NULL"]:
+                res = module.check(ex_text[0], )
+                if not res == "":
                     RESULT = res
             
             #now, check if this is a score that needs to be updated or added
@@ -86,7 +96,8 @@ def runcheck():
                     else:
                         f.write("\n"+line)
                 f.close()
-            except:
+            except Exception as e:
+                print(e)
                 #new team? new file
                 try:
                     f = open(os.path.join(team_dir,team+".txt"), "w")
@@ -95,53 +106,90 @@ def runcheck():
                 except:
                     pass
     return files
-        
+
+def listsort(tup):
+    lst = len(tup)  
+    for i in range(0, lst):    
+        for j in range(0, lst-i-1):  
+            if (int(tup[j][1]) < int(tup[j + 1][1])):  
+                temp = tup[j]  
+                tup[j]= tup[j + 1]  
+                tup[j + 1]= temp  
+    return tup
+
 def graph():
-    final_list = []
+    tscore = []
+    temp_chart = []
     for filename in os.listdir(team_dir):
+        team_total=0
         f = open(os.path.join(team_dir, filename), "r")
         try:
             temp = f.readlines()
         except:
             temp = f.readlines().split("\n")
-        end_score = 0
-        for x in temp:
-            end_score = end_score+int(x.split(", ")[1])
+        for z in temp:
+            #team, comp, score
+            team_total = int(z.split(", ")[1]) + team_total
+            temp_chart.append((filename[:-4], z.split(", ")[0], z.split(", ")[1]))
+        tscore.append((filename[:-4], team_total))
         f.close()
-        final_list.append([filename[:-4], end_score])
-    x=[]
-    y=[]
-    for team in final_list:
-        x.append(team[0])
-        y.append(team[1])
 
-    data = [
-        go.Bar(x=x, y=y, text=y, textposition = 'auto', marker=dict(color='rgb(158,202,225)', 
-            line=dict(color='rgb(8,48,107)', width=1.5)), opacity=0.6)
-            ]
+    data = make_subplots(
+        rows=2, cols=1,
+        vertical_spacing=0.05,
+        specs=[[{"type": "bar"}],
+            [{"type": "table"}]]
+    )
+
+    for item in temp_chart:
+        data.add_trace(go.Bar(x=[str(item[0])], y=[int(item[2])], name=str(item[1]), text=[str(item[1])], textposition = 'auto', 
+            marker=dict(color=convertHex(item[0]), line=dict(color=convertHex(item[0]), width=1.5)), 
+            opacity=0.8),row=1, col=1)
+
+    rankings = []
+    if len(tscore)+1 > 16:
+        for i in range(1, 16):
+            rankings.append(i)
+    else:
+        for i in range(1, len(tscore)+1):
+            rankings.append(i)
+
+    tscore = listsort(tscore)
+    scores = []
+    teams = []
+    for index,item in enumerate(tscore):
+        if index <= 16:
+            teams.append(item[0])
+            scores.append(item[1])
+
+    data.add_trace(go.Table(header=dict(values=["Rank", "Team", "Score"]), cells=dict(values=[rankings, teams, scores])), row=2, col=1)
+
+    data.update_layout(title=graph_title, barmode='stack', xaxis={'categoryorder':'category ascending'}, showlegend=False, height=1000)
 
     py.offline.plot({
-        "data": data,
-        "layout": go.Layout(title=graph_title, barmode='stack')
+        "data": data
         }, auto_open=False)
 
     try:
+        with open("temp-plot.html", "a") as f:
+            f.write('<style type="text/css">\nhtml {\noverflow:hidden;\n}\n</style>"')
         shutil.copy("temp-plot.html", os.path.join(site_dir,"index.html"))
     except:
         pass
 
 client = discord.Client()
 
-async def loop_bg():
+async def loop_bg(loop):
     need_graph = runcheck()
-    if need_graph:
+    if need_graph or loop:
         graph()
         print("UPDATED")
         for filename in os.listdir(submit_dir):
             shutil.move(os.path.join(submit_dir, filename), os.path.join(submit_dir[:-1]+"_archive/", filename))
-    await asyncio.sleep(30)
+    if loop:
+        await asyncio.sleep(30)
 
-client.loop.create_task(loop_bg())
+client.loop.create_task(loop_bg(True))
 
 @client.event
 async def on_ready():
@@ -159,7 +207,7 @@ async def on_message(message):
         except:
             await message.channel.send('No "admins" role. Please add one.')
         if ModMessage == "update" and role in message.author.roles:
-            graph()
+            await loop_bg(True)
             await message.add_reaction("👌")
         elif ModMessage.startswith("change ") and role in message.author.roles:
             ModMessage = ModMessage.replace("change ", "")
@@ -214,7 +262,7 @@ async def on_message(message):
                     except:
                         pass
         elif ModMessage.startswith("view "):
-            ModMessage = ModMessage.replace("view ", "")
+            ModMessage = message.content.replace("view ", "").replace("bs ", "")
             try:
                 f = open(os.path.join(team_dir, ModMessage+".txt"), "r")
                 team_scores = f.readlines()
