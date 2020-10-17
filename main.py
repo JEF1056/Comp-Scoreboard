@@ -68,7 +68,6 @@ def scores():
     scaled_ctfs=[]
     ctfs={}
     counter=0
-    print(unscaled_team_scores)
     for row in all_rows:
         teams.append(row["team"])
         for ctf in row:
@@ -100,8 +99,6 @@ def scores():
             scaled_team_total+=val[i]
         team_totals.append((teams[i], scaled_team_total,unscaled_team_scores[i]))
     team_totals=sorted(team_totals, key=lambda x: x[1])
-    print(ctf_fixed)
-    print(team_totals)
     return render_template("scoreboard.html", teams=teams, ctfs=ctf_fixed, team_totals=team_totals[::-1])
 
 @app.errorhandler(Unauthorized)
