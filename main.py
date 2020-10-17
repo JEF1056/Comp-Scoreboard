@@ -109,12 +109,15 @@ def upload():
     teams=db["teams"]
     team=users.find_one(discord_id=str(discord_id.id))
     t_scores=teams.find_one(team=team["team"])
-    scores={}
-    for ctf in t_scores:
-        if ctf != "id" and ctf != team["team"]:
-            scores[ctf] = t_scores[ctf]
-    config=json.loads(open("./config.json","r").read())["ctfs"]
-    return render_template("upload.html", ctfs=config, user=str(discord_id), team=team["team"], scores=scores)
+        if t_scores != None:
+        scores={}
+        for ctf in t_scores:
+            if ctf != "id" and ctf != team["team"]:
+                scores[ctf] = t_scores[ctf]
+        config=json.loads(open("./config.json","r").read())["ctfs"]
+        return render_template("upload.html", ctfs=config, user=str(discord_id), team=team["team"], scores=scores)
+    else:
+        return 401
 
 @app.route("/upload", methods=["POST"])
 @requires_authorization
