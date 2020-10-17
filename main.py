@@ -75,7 +75,7 @@ def redirect_unauthorized(e):
 
 @app.route("/login/")
 def login():
-  return discord.create_session(scope=["identify"])
+  return discord.create_session(scope=["identify", "guilds"])
 
 @app.route("/logout/")
 @requires_authorization
