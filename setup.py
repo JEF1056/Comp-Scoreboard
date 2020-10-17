@@ -23,7 +23,7 @@ async def on_ready():
                 users.upsert({"discord_id":str(member.id), "team":config["teams"][user]}, ["team"], ensure=True)
         if found==False:
             print(f"{user} not found")
-    all_rows=users.find(discord_id={'>=': 0})
+    all_rowss=users.find(discord_id={'>=': 0})
     for row in all_rows:
         print(row)
     
