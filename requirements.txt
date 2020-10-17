@@ -1,6 +1,6 @@
 Flask-Discord
 cachetools
 waitress
-corlormap
+colormap
 dataset
 discord.py
