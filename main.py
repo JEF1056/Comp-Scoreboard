@@ -165,8 +165,8 @@ def upload_accept():
         errors.append("ya ain't part of no team!")
     t_scores=teams.find_one(team=team["team"])
     for ctf in t_scores:
-    if ctf != "id" and ctf != team["team"]:
-        scores[ctf] = t_scores[ctf]
+        if ctf != "id" and ctf != team["team"]:
+            scores[ctf] = t_scores[ctf]
     return render_template("upload.html", ctfs=config, user=str(discord_id), team=team["team"], scores=scores, errors=errors)
 
 @app.route("/admin")
