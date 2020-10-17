@@ -102,6 +102,7 @@ def upload():
 def upload_accept():
     teams=db["teams"]
     users=db["users"]
+    config=json.loads(open("./config.json","r").read())["ctfs"]
     #this would require id'ing a user by discord username
     discord_id=discord.fetch_user()
     team=users.find_one(discord_id=str(discord_id.id))
