@@ -159,6 +159,22 @@ def upload_accept():
         errors.append("ya ain't part of no team!")
     return render_template("upload.html", ctfs=config, user=str(discord_id), team=team["team"], scores=scores, errors=errors)
 
+@app.route("/admin")
+@requires_authorization
+def admin():
+    discord_id=discord.fetch_user()
+    users=db["users"]
+    team=users.find_one(discord_id=str(discord_id.id))
+    if team["team"] == "Admins" or team["team"] == "Intergalactic Irvin Helpers":
+        return "heya"
+    else:
+        return 404
+
+@app.route("/admin", methods=["POST"])
+@requires_authorization
+def admin_accept():
+    pass
+
 if __name__ == "__main__":
     if os.name == 'nt':
         app.run()
