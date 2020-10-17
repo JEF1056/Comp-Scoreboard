@@ -75,7 +75,7 @@ def redirect_unauthorized(e):
 
 @app.route("/login/")
 def login():
-  return discord.create_session(scope=["identify", "guilds"])
+  return discord.create_session(scope=["identify"])
 
 @app.route("/logout/")
 @requires_authorization
@@ -91,7 +91,7 @@ def callback():
 @app.route("/upload")
 @requires_authorization
 def upload():
-    config=json.loads(open("../config.json","r").read())["ctfs"]
+    config=json.loads(open("./config.json","r").read())["ctfs"]
     return render_template("upload.html", ctfs=config)
 
 @app.route("/upload", methods=["POST"])
