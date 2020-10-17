@@ -71,3 +71,20 @@ blockquote p {
 #scrnshot {
     padding-top: 10px;
 }
+
+table {
+	color: #333;
+	font-size: 0.9rem;
+	margin: 8px 0;
+	width: 100%
+}
+
+th {
+	background-color: #f0f0f0;
+	padding: 2px;
+}
+
+td {
+	padding: 2px;
+	text-align: center;
+}
