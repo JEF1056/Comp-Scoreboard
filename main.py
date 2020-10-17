@@ -63,8 +63,11 @@ def scores():
     teams=db["teams"]
     all_rows=teams.find(id={'>=': 0})
     teams=[]
+    team_totals=[]
+    unscaled_team_scores=[0]*len(teams)
+    scaled_ctfs=[]
     ctfs={}
-    for row in all_rows:
+    for i,row in enumerate(all_rows):
         teams.append(row["team"])
         for ctf in row:
             if ctf != "id" and ctf !="team":
@@ -74,16 +77,24 @@ def scores():
                     ctfs[ctf].append(row[ctf])
                 except:
                     ctfs[ctf] = [row[ctf]]
-    color = hex_to_rgb("#"+str(hex(np.random.randint(1056000,16777215)))[2:])
+                unscaled_team_scores[i]+=row[ctf]
+    color = hex_to_rgb("#"+str(hex(np.random.randint(0,16777215)))[2:])
     ctf_fixed=[]
     for ctf in ctfs:
         ctf_fixed.append({"label":ctf, "data":scale_teams(ctfs[ctf]), "backgroundColor":f"rgb{color+(0.5,)}"})
+        scaled_ctfs.append(scale_teams(ctfs[ctf]))
         try:
             color=darken_color(color)
         except:
             print(color)
             print(type(color))
-    return render_template("scoreboard.html", teams=teams, ctfs=ctf_fixed)
+    for i in range(len(teams)):
+        scaled_team_total=0
+        for val in scaled_ctfs:
+            scaled_team_total+=val[i]
+        team_totals.append((teams[i], scaled_team_total,unscaled_team_scores[i]))
+    team_totals=sorted(team_totals, key=lambda x: x[1])
+    return render_template("scoreboard.html", teams=teams, ctfs=ctf_fixed, team_totals=team_totals)
 
 @app.errorhandler(Unauthorized)
 def redirect_unauthorized(e):

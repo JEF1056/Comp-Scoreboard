@@ -21,8 +21,16 @@
     </div>
     <script>
         var barChartData = {
-            labels: {{teams | safe}},
-            datasets: {{ctfs | safe}}
+            labels: {
+                {
+                    teams | safe
+                }
+            },
+            datasets: {
+                {
+                    ctfs | safe
+                }
+            }
         };
         window.onload = function () {
             var ctx = document.getElementById('canvas').getContext('2d');
@@ -52,6 +60,7 @@
         };
     </script>
 </body>
+
 <body>
     <table>
         <tbody>
@@ -61,7 +70,16 @@
                 <th>Total (realative)</th>
                 <th>Total (literal)</th>
             </tr>
+            {% for team in team_totals %}
+            <tr>
+                <td><b>{{team.index}}</b></td>
+                <td>{{team[0]}}</td>
+                <td>{{team[1]}}</td>
+                <td>{{team[2]}}</td>
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
 </body>
+
 </html>
