@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400italic");
+
 .form-style-5{
     max-width: 500px;
     padding: 10px 20px;
@@ -6,7 +8,7 @@
     padding: 20px;
     background: #f4f7f8;
     border-radius: 8px;
-    font-family: Georgia, "Times New Roman", Times, serif;
+    font-family: "Source Sans Pro", Helvetica, sans-serif;
 }
 
 .form-style-5 label {
@@ -17,7 +19,7 @@
 .form-style-5 input[type="email"],
 .form-style-5 textarea,
 .form-style-5 select {
-    font-family: Georgia, "Times New Roman", Times, serif;
+    font-family: "Source Sans Pro", Helvetica, sans-serif;
     background: rgba(255,255,255,.1);
     border: none;
     border-radius: 4px;
@@ -61,7 +63,6 @@ blockquote {
     border-left: 10px solid #ccc;
     margin: 1.5em 10px;
     padding: 0.5em 10px;
-    quotes: "\201C""\201D""\2018""\2019";
   }
   blockquote:before {
     color: #ccc;
