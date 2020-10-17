@@ -67,8 +67,8 @@ def scores():
     unscaled_team_scores=[0]*teams.count(all_rows)
     scaled_ctfs=[]
     ctfs={}
+    counter=0
     for row in all_rows:
-        print("e")
         teams.append(row["team"])
         for ctf in row:
             if ctf != "id" and ctf !="team":
@@ -78,7 +78,8 @@ def scores():
                     ctfs[ctf].append(row[ctf])
                 except:
                     ctfs[ctf] = [row[ctf]]
-                unscaled_team_scores[i]+=row[ctf]
+                unscaled_team_scores[counter]+=row[ctf]
+        counter+=1
     color = hex_to_rgb("#"+str(hex(np.random.randint(0,16777215)))[2:])
     ctf_fixed=[]
     for ctf in ctfs:
