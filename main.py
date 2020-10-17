@@ -68,6 +68,7 @@ def scores():
     scaled_ctfs=[]
     ctfs={}
     counter=0
+    print(unscaled_team_scores)
     for row in all_rows:
         teams.append(row["team"])
         for ctf in row:
