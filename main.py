@@ -7,6 +7,9 @@ from colormap import rgb2hex, rgb2hls, hls2rgb
 import numpy as np
 from werkzeug.utils import secure_filename
 from flask_discord import DiscordOAuth2Session, requires_authorization, Unauthorized
+import logging
+logger = logging.getLogger('waitress')
+logger.setLevel(logging.INFO)
 
 app = Flask(__name__)
 db = dataset.connect('sqlite:///scoreboard.db')
