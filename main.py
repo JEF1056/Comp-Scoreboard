@@ -97,9 +97,15 @@ def callback():
 def upload():
     discord_id=discord.fetch_user()
     users=db["users"]
+    teams=db["teams"]
     team=users.find_one(discord_id=str(discord_id.id))
+    t_scores=teams.find_one(team=team["team"])
+    scores={}
+    for ctf in t_scores:
+        if score != "id" and score != team["team"]:
+            scores[ctf] = t_scores[ctf]
     config=json.loads(open("./config.json","r").read())["ctfs"]
-    return render_template("upload.html", ctfs=config, user=str(discord_id), team=team["team"])
+    return render_template("upload.html", ctfs=config, user=str(discord_id), team=team["team"], scores=scores)
 
 @app.route("/upload", methods=["POST"])
 @requires_authorization
