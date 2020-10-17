@@ -91,8 +91,11 @@ def callback():
 @app.route("/upload")
 @requires_authorization
 def upload():
+    discord_id=discord.fetch_user()
+    users=db["users"]
+    team=users.find_one(discord_id=str(discord_id.id))
     config=json.loads(open("./config.json","r").read())["ctfs"]
-    return render_template("upload.html", ctfs=config)
+    return render_template("upload.html", ctfs=config, user=discord_id.username, team=team[team])
 
 @app.route("/upload", methods=["POST"])
 @requires_authorization
@@ -116,11 +119,13 @@ def upload_accept():
                 file.save(os.path.join("teams", team['team'], request.form["ctf"]+".png"))
             if request.form["ctf"].strip()=="":
                 return {"ERROR": "CTF name is empty"}
+            if str(request.form["ctf"].strip()) not in config:
+                return {"ERROR": "CTF does not exist/is not enabled; contact an admin."}
             try:
                 int(request.form["score"])
             except:
                 return {"ERROR": "Score is not an integer"}
-            teams.upsert({"team":team["team"], request.form["ctf"]:int(request.form["score"])}, ["team"], ensure=True)
+            teams.upsert({"team":team["team"], request.form["ctf"].strip():int(request.form["score"])}, ["team"], ensure=True)
             return teams.find_one(team=team["team"])
     else:
         return {"ERROR": "ya ain't part of no team!"}
