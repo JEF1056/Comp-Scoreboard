@@ -2,23 +2,23 @@
 <html>
 
 <head>
-	<title>BACCC Team Scores</title>
-	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-	<script src="/static/utils.js"></script>
-	<style>
-	canvas {
-		-moz-user-select: none;
-		-webkit-user-select: none;
-		-ms-user-select: none;
-	}
-	</style>
+    <title>BACCC Team Scores</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    <script src="/static/utils.js"></script>
+    <style>
+        canvas {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+    </style>
 </head>
 
 <body>
-	<div style="width: 95%; margin: 0 auto;">
-		<canvas id="canvas"></canvas>
-	</div>
-	<script>
+    <div style="width: 95%; margin: 0 auto;">
+        <canvas id="canvas"></canvas>
+    </div>
+    <script>
         window.chartColors = {
             red: 'rgb(255, 99, 132)',
             orange: 'rgb(255, 159, 64)',
@@ -29,36 +29,56 @@
             grey: 'rgb(201, 203, 207)'
         };
 
-		var barChartData = {
-			labels: {{teams|safe}},
-            datasets: {{ctfs|safe}}
-		};
-		window.onload = function() {
-			var ctx = document.getElementById('canvas').getContext('2d');
-			window.myBar = new Chart(ctx, {
-				type: 'bar',
-				data: barChartData,
-				options: {
-					title: {
-						display: true,
-						text: 'BACCC Team Scores'
-					},
-					tooltips: {
-						mode: 'index',
-						intersect: false
-					},
-					responsive: true,
-					scales: {
-						xAxes: [{
-							stacked: true,
-						}],
-						yAxes: [{
-							stacked: true
-						}]
-					}
-				}
-			});
-		};
-	</script>
+        var barChartData = {
+            labels: {
+                {
+                    teams | safe
+                }
+            },
+            datasets: {
+                {
+                    ctfs | safe
+                }
+            }
+        };
+        window.onload = function () {
+            var ctx = document.getElementById('canvas').getContext('2d');
+            window.myBar = new Chart(ctx, {
+                type: 'bar',
+                data: barChartData,
+                options: {
+                    title: {
+                        display: true,
+                        text: 'BACCC Team Scores'
+                    },
+                    tooltips: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    responsive: true,
+                    scales: {
+                        xAxes: [{
+                            stacked: true,
+                        }],
+                        yAxes: [{
+                            stacked: true
+                        }]
+                    }
+                }
+            });
+        };
+    </script>
+    <table>
+        <tbody>
+            <tr>
+                <th>Position</th>
+                <th>Team</th>
+                <th>Total (realative)</th>
+                <th>Total (literal)</th>
+            </tr>
+            
+        </tbody>
+    </table>
 </body>
+
 </html>
