@@ -44,7 +44,10 @@ def allowed_file(filename):
 
 @app.route("/")
 def root():
-    return render_template("index.html")
+    if discord.authorized:
+        return render_template("index-authed.html")
+    else:
+        return render_template("index.html")
 
 @app.route("/scores")
 def scores():
