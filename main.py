@@ -150,7 +150,7 @@ def upload_accept():
             errors.append("Invalid file")
     else:
         errors.append("ya ain't part of no team!")
-    return render_template("upload.html", ctfs=config, user=str(discord_id), team=team["team"], scores=scores, error=errors)
+    return render_template("upload.html", ctfs=config, user=str(discord_id), team=team["team"], scores=scores, errors=errors)
 
 if __name__ == "__main__":
     if os.name == 'nt':
