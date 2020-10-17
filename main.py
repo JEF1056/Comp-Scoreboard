@@ -45,7 +45,12 @@ def allowed_file(filename):
 @app.route("/")
 def root():
     if discord.authorized:
-        return render_template("index-authed.html")
+        users=db["users"]
+        team=users.find_one(discord_id=str(discord_id.id))
+        if team["team"] == "Admins" or team["team"] == "Intergalactic Irvin Helpers":
+            return render_template("index-authed-admin.html")
+        else:
+            return render_template("index-authed.html")
     else:
         return render_template("index.html")
 
