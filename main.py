@@ -102,7 +102,7 @@ def scores():
     team_totals=sorted(team_totals, key=lambda x: x[1])
     print(ctf_fixed)
     print(team_totals)
-    return render_template("scoreboard.html", teams=teams, ctfs=ctf_fixed, team_totals=team_totals.reverse())
+    return render_template("scoreboard.html", teams=teams, ctfs=ctf_fixed, team_totals=team_totals[::-1])
 
 @app.errorhandler(Unauthorized)
 def redirect_unauthorized(e):
