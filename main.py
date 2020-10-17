@@ -95,7 +95,8 @@ def upload():
     users=db["users"]
     team=users.find_one(discord_id=str(discord_id.id))
     config=json.loads(open("./config.json","r").read())["ctfs"]
-    return render_template("upload.html", ctfs=config, user=discord_id.username, team=team[team])
+    print(discord_id)
+    return render_template("upload.html", ctfs=config, user=str(discord_id), team=team[team])
 
 @app.route("/upload", methods=["POST"])
 @requires_authorization
