@@ -139,7 +139,7 @@ def upload_accept():
             if request.form["ctf"].strip()=="":
                 errors.append("CTF name is empty")
             if str(request.form["ctf"].strip()) not in config:
-                errors.append("CTF does not exist/is not enabled; contact an admin."}
+                errors.append("CTF does not exist/is not enabled; contact an admin.")
             try:
                 int(request.form["score"])
             except:
