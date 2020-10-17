@@ -73,10 +73,10 @@ blockquote p {
 }
 
 table {
+    margin: auto;
 	color: #333;
 	font-size: 0.9rem;
-	margin: 8px 0;
-	width: 80%
+	width: 90%
 }
 
 th {
