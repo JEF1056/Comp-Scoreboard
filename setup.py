@@ -27,9 +27,9 @@ async def on_ready():
     iih=server.get_role(626544492404539427)
     for member in server.members:
         if admins in member.roles:
-            users.upsert({"discord_id":str(member.id), "team":"Admins"}, ["team"], ensure=True)
+            users.upsert({"discord_id":str(member.id), "team":"Admins"}, ["discord_id"], ensure=True)
         elif iih in member.roles:
-            users.upsert({"discord_id":str(member.id), "team":"Intergalactic Irvin Helpers"}, ["team"], ensure=True)
+            users.upsert({"discord_id":str(member.id), "team":"Intergalactic Irvin Helpers"}, ["discord_id"], ensure=True)
     all_rows=users.find(discord_id={'>=': 0})
     for row in all_rows:
         print(row)
