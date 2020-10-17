@@ -117,7 +117,7 @@ def upload():
         config=json.loads(open("./config.json","r").read())["ctfs"]
         return render_template("upload.html", ctfs=config, user=str(discord_id), team=team["team"], scores=scores)
     else:
-        return 401
+        return {"ERROR":"Team not added"}, 401
 
 @app.route("/upload", methods=["POST"])
 @requires_authorization
@@ -171,7 +171,7 @@ def admin():
     if team["team"] == "Admins" or team["team"] == "Intergalactic Irvin Helpers":
         return "heya"
     else:
-        return 404
+        return {"ERROR":"100% not authorized"}, 404
 
 @app.route("/admin", methods=["POST"])
 @requires_authorization
