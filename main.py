@@ -45,6 +45,7 @@ def allowed_file(filename):
 @app.route("/")
 def root():
     if discord.authorized:
+        discord_id=discord.fetch_user()
         users=db["users"]
         team=users.find_one(discord_id=str(discord_id.id))
         if team["team"] == "Admins" or team["team"] == "Intergalactic Irvin Helpers":
