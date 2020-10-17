@@ -11,12 +11,12 @@ from flask_discord import DiscordOAuth2Session, requires_authorization, Unauthor
 app = Flask(__name__)
 db = dataset.connect('sqlite:///scoreboard.db')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
-discord = DiscordOAuth2Session(app)
 config=json.loads(open("../config.json","r").read())
 app.secret_key = config["secret_key"]
 app.config["DISCORD_CLIENT_ID"] = config["DISCORD_CLIENT_ID"]  # Discord client ID.
 app.config["DISCORD_CLIENT_SECRET"] = config["DISCORD_CLIENT_SECRET"]  # Discord client secret.
 app.config["DISCORD_REDIRECT_URI"] = config["DISCORD_REDIRECT_URI"]   # Redirect URI.
+discord = DiscordOAuth2Session(app)
 
 def hex_to_rgb(hex):
      hex = hex.lstrip('#')
