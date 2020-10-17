@@ -48,10 +48,13 @@ def root():
         discord_id=discord.fetch_user()
         users=db["users"]
         team=users.find_one(discord_id=str(discord_id.id))
-        if team["team"] == "Admins" or team["team"] == "Intergalactic Irvin Helpers":
-            return render_template("index-authed-admin.html")
+        if team != None:
+            if team["team"] == "Admins" or team["team"] == "Intergalactic Irvin Helpers":
+                return render_template("index-authed-admin.html")
+            else:
+                return render_template("index-authed.html")
         else:
-            return render_template("index-authed.html")
+            return {"ERROR":"Team/user not registered"}, 401
     else:
         return render_template("index.html")
 
@@ -117,7 +120,7 @@ def upload():
         config=json.loads(open("./config.json","r").read())["ctfs"]
         return render_template("upload.html", ctfs=config, user=str(discord_id), team=team["team"], scores=scores)
     else:
-        return {"ERROR":"Team not added"}, 401
+        return {"ERROR":"Team/User not registered"}, 401
 
 @app.route("/upload", methods=["POST"])
 @requires_authorization
