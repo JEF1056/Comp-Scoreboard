@@ -1,0 +1,22 @@
+<head> 
+    <link href="/static/upload.css" type="text/css" rel="stylesheet">
+ </head>
+ <div class="form-style-5">
+    <form method="post" enctype=multipart/form-data>
+        <label for="team">Discord ID:</label><br>
+        <input type="text" id="did" name="did"><br>
+        <label for="ctf">CTF:</label><br>
+        <select id="ctf" name="ctf">
+            {% for row in ctfs %}
+            <option value="{{row}}">{{row}}</option>
+            {% endfor %}
+        </select>
+        <label for="Score">Score:</label><br>
+        <input type="text" id="score" name="score"><br>
+        <!--<input type="checkbox" id="self-hosted" name="self-hosted" value="yes">
+        <label for="self-hosted"> This CTF was created by my team</label><br>-->
+        <label for="screenshot">Upload Screenshot</label></label><br>
+        <input type=file name="screenshot"><br><br>
+        <input type="submit" value="Submit">
+    </form>
+</div>
