@@ -64,7 +64,7 @@
             </tr>
             {% for team in team_totals %}
             <tr>
-                <td><b>{{team.index}}</b></td>
+                <td><b>{{loop.index}}</b></td>
                 <td>{{team[0]}}</td>
                 <td>{{team[1]}}</td>
                 <td>{{team[2]}}</td>
