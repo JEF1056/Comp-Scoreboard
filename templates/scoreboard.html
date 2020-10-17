@@ -22,7 +22,6 @@
         var barChartData = {
             labels: {{teams | safe}},
             datasets: {{ctfs | safe}}
-            }
         };
         window.onload = function () {
             var ctx = document.getElementById('canvas').getContext('2d');
