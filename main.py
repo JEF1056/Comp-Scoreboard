@@ -83,7 +83,7 @@ def scores():
                 except:
                     unscaled_team_scores.append(row[ctf])
         counter+=1
-    color = hex_to_rgb("#"+str(hex(np.random.randint(0,16777215)))[2:])
+    color = hex_to_rgb("#"+str(hex(np.random.randint(1000000,16777215)))[2:])
     ctf_fixed=[]
     for ctf in ctfs:
         ctf_fixed.append({"label":ctf, "data":scale_teams(ctfs[ctf]), "backgroundColor":f"rgb{color+(0.5,)}"})
