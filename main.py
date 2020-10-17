@@ -67,6 +67,7 @@ def scores():
     unscaled_team_scores=[0]*(len(teams)+1)
     scaled_ctfs=[]
     ctfs={}
+    print(unscaled_team_scores)
     for i,row in enumerate(all_rows):
         teams.append(row["team"])
         for ctf in row:
@@ -77,6 +78,7 @@ def scores():
                     ctfs[ctf].append(row[ctf])
                 except:
                     ctfs[ctf] = [row[ctf]]
+                print(i)
                 unscaled_team_scores[i]+=row[ctf]
     color = hex_to_rgb("#"+str(hex(np.random.randint(0,16777215)))[2:])
     ctf_fixed=[]
