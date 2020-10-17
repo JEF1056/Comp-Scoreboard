@@ -4,3 +4,5 @@ waitress
 colormap
 dataset
 discord.py
+numpy
+easydev
