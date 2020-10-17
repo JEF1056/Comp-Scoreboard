@@ -108,8 +108,8 @@ def upload():
     users=db["users"]
     teams=db["teams"]
     team=users.find_one(discord_id=str(discord_id.id))
-    t_scores=teams.find_one(team=team["team"])
-    if t_scores != None:
+    if team != None:
+        t_scores=teams.find_one(team=team["team"])
         scores={}
         for ctf in t_scores:
             if ctf != "id" and ctf != team["team"]:
