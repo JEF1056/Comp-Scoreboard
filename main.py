@@ -64,7 +64,7 @@ def scores():
     all_rows=teams.find(id={'>=': 0})
     teams=[]
     team_totals=[]
-    unscaled_team_scores=[0]*len(teams)
+    unscaled_team_scores=[0]*(len(teams)+1)
     scaled_ctfs=[]
     ctfs={}
     for i,row in enumerate(all_rows):
