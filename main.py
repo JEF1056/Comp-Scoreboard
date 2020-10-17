@@ -67,8 +67,8 @@ def scores():
     unscaled_team_scores=[0]*(len(list(all_rows)))
     scaled_ctfs=[]
     ctfs={}
-    for row in all_rows:
-        i=0
+    for i,row in enumerate(list(all_rows)):
+        print(row["team"])
         teams.append(row["team"])
         for ctf in row:
             if ctf != "id" and ctf !="team":
