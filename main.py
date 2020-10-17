@@ -119,12 +119,17 @@ def upload_accept():
     #this would require id'ing a user by discord username
     discord_id=discord.fetch_user()
     team=users.find_one(discord_id=str(discord_id.id))
+    t_scores=teams.find_one(team=team["team"])
+    scores={}
+    for ctf in t_scores:
+        if ctf != "id" and ctf != team["team"]:
+            scores[ctf] = t_scores[ctf]
     if team != None:
         print(request.files)
         file = request.files['screenshot']
+        errors=[]
         if file.filename == '':
-            print('No selected file')
-            return {"ERROR": "No screenshot"}
+            errors.append("No Screenshot")
         if file and allowed_file(file.filename):
             try:
                 file.save(os.path.join("teams", team['team'], request.form["ctf"]+".png"))
@@ -132,17 +137,20 @@ def upload_accept():
                 os.mkdir(os.path.join("teams", team['team']))
                 file.save(os.path.join("teams", team['team'], request.form["ctf"]+".png"))
             if request.form["ctf"].strip()=="":
-                return {"ERROR": "CTF name is empty"}
+                errors.append("CTF name is empty")
             if str(request.form["ctf"].strip()) not in config:
-                return {"ERROR": "CTF does not exist/is not enabled; contact an admin."}
+                errors.append("CTF does not exist/is not enabled; contact an admin."}
             try:
                 int(request.form["score"])
             except:
-                return {"ERROR": "Score is not an integer"}
+                errors.append("Score is not an integer")
             teams.upsert({"team":team["team"], request.form["ctf"].strip():int(request.form["score"])}, ["team"], ensure=True)
-            return teams.find_one(team=team["team"])
+            errors.append("Successfully uploaded a score!")
+        else:
+            errors.append("Invalid file")
     else:
-        return {"ERROR": "ya ain't part of no team!"}
+        errors.append("ya ain't part of no team!")
+    return render_template("upload.html", ctfs=config, user=str(discord_id), team=team["team"], scores=scores, error=errors)
 
 if __name__ == "__main__":
     if os.name == 'nt':
