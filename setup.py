@@ -23,8 +23,8 @@ async def on_ready():
                 users.upsert({"discord_id":str(member.id), "team":config["teams"][user]}, ["team"], ensure=True)
         if found==False:
             print(f"{user} not found")
-    admins=client.get_role(607677887100747813)
-    iih=client.get_role(626544492404539427)
+    admins=server.get_role(607677887100747813)
+    iih=server.get_role(626544492404539427)
     for member in server.members:
         if admins in member.roles:
             users.upsert({"discord_id":str(member.id), "team":"Admins"}, ["team"], ensure=True)
