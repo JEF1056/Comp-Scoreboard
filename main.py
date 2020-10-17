@@ -130,7 +130,7 @@ def upload_accept():
         errors=[]
         if file.filename == '':
             errors.append("No Screenshot")
-        if file and allowed_file(file.filename):
+        elif file and allowed_file(file.filename):
             try:
                 file.save(os.path.join("teams", team['team'], request.form["ctf"]+".png"))
             except:
@@ -144,6 +144,7 @@ def upload_accept():
                 int(request.form["score"])
             except:
                 errors.append("Score is not an integer")
+                return render_template("upload.html", ctfs=config, user=str(discord_id), team=team["team"], scores=scores, errors=errors)
             teams.upsert({"team":team["team"], request.form["ctf"].strip():int(request.form["score"])}, ["team"], ensure=True)
             errors.append("Successfully uploaded a score!")
         else:
