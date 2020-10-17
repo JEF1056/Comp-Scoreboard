@@ -44,6 +44,10 @@ def allowed_file(filename):
 
 @app.route("/")
 def root():
+    return render_template("index.html")
+
+@app.route("/scores")
+def scores():
     teams=db["teams"]
     all_rows=teams.find(id={'>=': 0})
     teams=[]
