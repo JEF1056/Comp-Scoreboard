@@ -1,0 +1,14 @@
+<head> 
+    <link href="/static/main.css" type="text/css" rel="stylesheet">
+ </head>
+ <div class="form-style-5">
+    <header>
+        <h3>Available CTFs:</h3>
+        {% for row in scores %}
+        <p>{{row}}: {{scores[row]}}</p>
+        {% endfor %}
+    </header>
+    <form action="/upload">
+        <input type="submit" value="Upload a Score" />
+    </form>
+ </div>

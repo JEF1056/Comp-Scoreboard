@@ -54,7 +54,7 @@ def root():
             else:
                 return render_template("index-authed.html")
         else:
-            return {"ERROR":"Team/user not registered"}, 401
+            return render_template("unauth.html")
     else:
         return render_template("index.html")
 
@@ -136,7 +136,7 @@ def upload():
         config=json.loads(open("./config.json","r").read())["ctfs"]
         return render_template("upload.html", ctfs=config, user=str(discord_id), team=team["team"], scores=scores)
     else:
-        return {"ERROR":"Team/User not registered"}, 401
+        return render_template("unauth.html")
 
 @app.route("/upload", methods=["POST"])
 @requires_authorization
@@ -194,7 +194,7 @@ def admin():
     if team["team"] == "Admins" or team["team"] == "Intergalactic Irvin Helpers":
         return "heya"
     else:
-        return {"ERROR":"100% not authorized"}, 404
+        return render_template("unauth.html")
 
 @app.route("/admin", methods=["POST"])
 @requires_authorization
