@@ -130,9 +130,10 @@ def upload():
     if team != None:
         t_scores=teams.find_one(team=team["team"])
         scores={}
-        for ctf in t_scores:
-            if ctf != "id" and ctf != team["team"]:
-                scores[ctf] = t_scores[ctf]
+        if t_scores != None:
+            for ctf in t_scores:
+                if ctf != "id" and ctf != team["team"]:
+                    scores[ctf] = t_scores[ctf]
         config=json.loads(open("./config.json","r").read())["ctfs"]
         return render_template("upload.html", ctfs=config, user=str(discord_id), team=team["team"], scores=scores)
     else:
