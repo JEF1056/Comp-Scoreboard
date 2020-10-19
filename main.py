@@ -150,9 +150,10 @@ def upload_accept():
     team=users.find_one(discord_id=str(discord_id.id))
     t_scores=teams.find_one(team=team["team"])
     scores={}
-    for ctf in t_scores:
-        if ctf != "id" and ctf != team["team"]:
-            scores[ctf] = t_scores[ctf]
+    if t_scores != None:
+        for ctf in t_scores:
+            if ctf != "id" and ctf != team["team"]:
+                scores[ctf] = t_scores[ctf]
     if team != None:
         print(request.files)
         file = request.files['screenshot']
