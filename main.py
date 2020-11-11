@@ -29,7 +29,7 @@ def adjust_color_lightness(r, g, b, factor):
     r, g, b = hls2rgb(h, l, s)
     return (int(r * 255), int(g * 255), int(b * 255))
 
-def darken_color(tup, factor=0.4):
+def darken_color(tup, factor=0.2):
     r, g, b = tup
     return adjust_color_lightness(r, g, b, 1 - factor)
 
